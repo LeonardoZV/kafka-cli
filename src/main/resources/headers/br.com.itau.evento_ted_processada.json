@@ -1,0 +1,11 @@
+{
+   "specversion":"0.1",
+   "type":"br.com.itau.evento_ted_processada",
+   "source":"",
+   "id":"{UUID}",
+   "time":"{DATETIME-FORMATO-ISO}",
+   "messageversion":"1",
+   "transactionid":"",
+   "correlationid":"",
+   "datacontenttype":"application/avro"
+}

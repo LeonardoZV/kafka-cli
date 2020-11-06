@@ -1,0 +1,8 @@
+{
+   "data":{
+      "codigo_produto_operacional":100,
+      "data_hora_operacao":"{DATETIME-FORMATO-ISO}",
+      "codigo_empresa":341,
+      "valor":1.0
+   }
+}
