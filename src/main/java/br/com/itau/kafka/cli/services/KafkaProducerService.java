@@ -13,6 +13,8 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -22,7 +24,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class KafkaProducerService {
-		
+	
+	private static final Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
+	
 	@Autowired
 	private KafkaTemplate<String, GenericData.Record> kafkaTemplate;
 	
@@ -50,7 +54,7 @@ public class KafkaProducerService {
 	public void printarMetricas() {
 
 		for (Entry<MetricName, ? extends Metric> entry : kafkaTemplate.metrics().entrySet()) {
-		    System.out.println(entry.getKey().name() + " : " + entry.getValue().metricValue());
+			log.info(entry.getKey().name() + " : " + entry.getValue().metricValue());
 		}
 		
 	}
