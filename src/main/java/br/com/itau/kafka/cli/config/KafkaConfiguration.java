@@ -63,6 +63,9 @@ public class KafkaConfiguration {
 	@Value("${kafka.consumer.concurrency}")
 	private int kafkaConcurrency;
 	
+	@Value("${kafka.consumer.max-poll-interval-ms}")
+	private String kafkaMaxPollIntervalMs;
+	
 	@Value("${kafka.consumer.max-poll-records}")
 	private String kafkaMaxPollRecords;
 	
@@ -117,6 +120,7 @@ public class KafkaConfiguration {
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, kafkaAutoOffsetReset);
         props.put(ConsumerConfig.ALLOW_AUTO_CREATE_TOPICS_CONFIG, kafakAllowAutoCreateTopics);
 		props.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, kafkaPartitionAssignmentStrategy);
+		props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, kafkaMaxPollIntervalMs);
 		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, kafkaMaxPollRecords);
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaKeyDeserializer);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class.getName());
