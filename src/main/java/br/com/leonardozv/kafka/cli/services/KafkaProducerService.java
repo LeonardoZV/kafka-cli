@@ -1,10 +1,9 @@
-package br.com.itau.kafka.cli.services;
+package br.com.leonardozv.kafka.cli.services;
 
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericData.Record;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.DatumReader;
@@ -28,34 +27,36 @@ public class KafkaProducerService {
 	private static final Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
 	
 	@Autowired
-	private KafkaTemplate<String, GenericData.Record> kafkaTemplate;
+	private KafkaTemplate<String, Record> kafkaTemplate;
 	
-	public CompletableFuture<SendResult<String, Record>> produzir(String topico, Schema schema, JsonNode headerJson, JsonNode payloadJson) throws Exception {
+	private DecoderFactory decoderFactory = new DecoderFactory();
 		
-		DecoderFactory decoderFactory = new DecoderFactory();		
-		Decoder decoder = decoderFactory.jsonDecoder(schema, payloadJson.toString());		
-		DatumReader<GenericData.Record> reader = new GenericDatumReader<GenericData.Record>(schema);		
-		GenericData.Record genericRecord = reader.read(null, decoder);
-
-		ProducerRecord<String, GenericData.Record> record = new ProducerRecord<String, GenericData.Record>(topico, genericRecord);
+	public CompletableFuture<SendResult<String, Record>> produzir(String topico, Schema schema, JsonNode headerJson, String payload) throws Exception {
+				
+		Decoder decoder = decoderFactory.jsonDecoder(schema, payload);		
+		DatumReader<Record> reader = new GenericDatumReader<>(schema);
+		Record genericRecord = reader.read(null, decoder);
+		ProducerRecord<String, Record> record = new ProducerRecord<>(topico, genericRecord);
 		
 		if (headerJson != null) {
-			
-			headerJson.fields().forEachRemaining(h -> {
-				record.headers().add(h.getKey(), h.getValue().asText().getBytes());
-			});
-			
+			headerJson.fields().forEachRemaining(h ->  record.headers().add(h.getKey(), h.getValue().asText().getBytes()));
 		}
 
-		return kafkaTemplate.send(record).completable();
+		return this.kafkaTemplate.send(record).completable();
 		
 	}
 	
 	public void printarMetricas() {
 
 		for (Entry<MetricName, ? extends Metric> entry : kafkaTemplate.metrics().entrySet()) {
-			log.info(entry.getKey().name() + " : " + entry.getValue().metricValue());
+			log.info(entry.getKey().group() + " - " + entry.getKey().name() + " : " + entry.getValue().metricValue());
 		}
+		
+	}
+	
+	public void flush() {
+		
+		this.kafkaTemplate.flush();
 		
 	}
 

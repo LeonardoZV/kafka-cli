@@ -1,11 +1,13 @@
-package br.com.itau.kafka.cli.config;
+package br.com.leonardozv.kafka.cli.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericData.Record;
+import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.SaslConfigs;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +34,12 @@ public class KafkaConfiguration {
 	
 	@Value("${kafka.security-protocol}")
 	private String kafkaSecurityProtocol;
+	
+	@Value("${kafka.sasl-jaas-config}")
+	private String saslJaasConfig;
+	
+	@Value("${kafka.sasl-mechanism}")
+	private String saslMechanism;
 		
 	@Value("${kafka.ssl-keystore-location}")
 	private String kafkaSslKeystoreLocation;
@@ -47,6 +55,12 @@ public class KafkaConfiguration {
 	
 	@Value("${schema.registry.url}")
 	private String schemaRegistryUrl;
+	
+	@Value("${schema.registry.basic.auth.credentials.source}")
+	private String schemaRegistryBasicAuthCredentialsSource;
+	
+	@Value("${schema.registry.basic.auth.user.info}")
+	private String schemaRegistryBasicAuthUserInfo;
 		
 	@Value("${kafka.consumer.enable-auto-commit}")
 	private boolean kafkaEnableAutoCommit;
@@ -111,7 +125,9 @@ public class KafkaConfiguration {
 		Map<String, Object> props = new HashMap<>();
 		
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
-//		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaSecurityProtocol);
+		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaSecurityProtocol);
+		props.put(SaslConfigs.SASL_JAAS_CONFIG, saslJaasConfig);
+		props.put(SaslConfigs.SASL_MECHANISM, saslMechanism);
 //		props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, kafkaSslKeystoreLocation);
 //		props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, kafkaSslKeystorePassword);
 //		props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, kafkaSslTruststoreLocation);
@@ -125,8 +141,11 @@ public class KafkaConfiguration {
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaKeyDeserializer);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class.getName());
 		props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, kafakaValueDeserializer);
+		
 		props.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
-		props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, schemaRegistryspecificAvroReader);
+		props.put(KafkaAvroDeserializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE, schemaRegistryBasicAuthCredentialsSource);
+		props.put(KafkaAvroDeserializerConfig.USER_INFO_CONFIG, schemaRegistryBasicAuthUserInfo);
+//		props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, schemaRegistryspecificAvroReader);
 		        
         return props;
     }
@@ -145,13 +164,10 @@ public class KafkaConfiguration {
 
         factory.setConsumerFactory(consumerFactory());
         
-        // Número de threads a utilizar para consumo.
         factory.setConcurrency(kafkaConcurrency);
 
-        // Se é um consumo batch.
         factory.setBatchListener(true);
         
-        // Tipo de commit a ser utilizado.
         factory.getContainerProperties().setAckMode(AckMode.MANUAL);
         
         return factory;
@@ -164,7 +180,9 @@ public class KafkaConfiguration {
 		Map<String, Object> props = new HashMap<>();
 		
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
-//		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaSecurityProtocol);
+		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaSecurityProtocol);
+		props.put(SaslConfigs.SASL_JAAS_CONFIG, saslJaasConfig);
+		props.put(SaslConfigs.SASL_MECHANISM, saslMechanism);
 //		props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, kafkaSslKeystoreLocation);
 //		props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, kafkaSslKeystorePassword);
 //		props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, kafkaSslTruststoreLocation);
@@ -176,26 +194,29 @@ public class KafkaConfiguration {
 		props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, kafkaCompressionType);		
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, kafkaKeySerializer);
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, kafakaValueSerializer);
-		props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+		
+		props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl); 
+		props.put(KafkaAvroSerializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE, schemaRegistryBasicAuthCredentialsSource);
+		props.put(KafkaAvroSerializerConfig.USER_INFO_CONFIG, schemaRegistryBasicAuthUserInfo);
 		props.put(KafkaAvroSerializerConfig.AUTO_REGISTER_SCHEMAS, schemaRegistryAutoRegisterSchemas);
 //		props.put(KafkaAvroSerializerConfig.VALUE_SUBJECT_NAME_STRATEGY, schemaRegistryValueSubjectNameStrategy);
 //		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 335544320);
-//		props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 10485760);
-		
+		props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 5048576);
+
         return props;
     }
 		
 	@Bean
-    public ProducerFactory<String, GenericData.Record> producerFactory() {
+    public ProducerFactory<String, Record> producerFactory() {
 		
         return new DefaultKafkaProducerFactory<>(producerConfigs());
         
     }
 
 	@Bean
-	public KafkaTemplate<String, GenericData.Record> kafkaTemplate() {
+	public KafkaTemplate<String, Record> kafkaTemplate() {
 		
-		return new KafkaTemplate<String, GenericData.Record>(producerFactory());
+		return new KafkaTemplate<>(producerFactory());
 	    
 	}
 	

@@ -9,9 +9,9 @@
 		<relativePath/>
 	</parent>
 	<groupId>br.com.itau</groupId>
-	<artifactId>itau-kafka-cli-java</artifactId>
+	<artifactId>kafka-cli-java</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
-	<name>itau-kafka-cli-java</name>
+	<name>kafka-cli-java</name>
 
 	<properties>
 		<java.version>11</java.version>

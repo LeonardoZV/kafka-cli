@@ -1,4 +1,4 @@
-package br.com.itau.kafka.cli.config;
+package br.com.leonardozv.kafka.cli.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -39,8 +39,8 @@ public class AppConfiguration {
 	@Value("#{new Integer('${batches:1}')}")
 	private Integer batches;
 	
-	@Value("#{new Integer('${events:1}')}")
-	private Integer events;
+	@Value("#{new Long('${events:1}')}")
+	private Long events;
 
 	public String getApplicationHeaderFolderLocation() {
 		return applicationHeaderFolderLocation;
@@ -130,11 +130,11 @@ public class AppConfiguration {
 		this.batches = batches;
 	}
 
-	public Integer getEvents() {
+	public Long getEvents() {
 		return events;
 	}
 
-	public void setEvents(Integer events) {
+	public void setEvents(Long events) {
 		this.events = events;
 	}
 	

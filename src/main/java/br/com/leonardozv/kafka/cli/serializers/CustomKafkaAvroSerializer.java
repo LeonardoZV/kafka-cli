@@ -1,4 +1,4 @@
-package br.com.itau.kafka.cli.serializers;
+package br.com.leonardozv.kafka.cli.serializers;
 
 import java.util.Map;
 
