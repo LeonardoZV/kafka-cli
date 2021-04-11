@@ -29,3 +29,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Específico ###
+src/main/resources/application-confluent.properties
+src/main/resources/application-azure.properties
