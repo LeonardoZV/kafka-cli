@@ -1,1 +1,1 @@
-# itau-kafka-cli-java
+# kafka-cli-java
