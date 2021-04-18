@@ -39,7 +39,7 @@ public class KafkaProducerService {
 		ProducerRecord<String, Record> record = new ProducerRecord<>(topico, genericRecord);
 		
 		if (headerJson != null) {
-			headerJson.fields().forEachRemaining(h ->  record.headers().add(h.getKey(), h.getValue().asText().getBytes()));
+			headerJson.fields().forEachRemaining(h -> record.headers().add(h.getKey(), h.getValue().asText().getBytes()));
 		}
 
 		return this.kafkaTemplate.send(record).completable();
