@@ -1,12 +1,13 @@
 {
-   "type":"record",
-   "name":"br.com.itau.evento_ted_processada.EventoTedProcessada",
-   "fields":[
+    "namespace":"br.com.leonardozv.exemplos",
+    "name":"TransferenciaRealizada",
+    "type":"record",
+    "fields":[
       {
          "name":"data",
          "type":{
             "type":"record",
-            "name":"br.com.itau.evento_ted_processada.EventoTedProcessadaData",
+            "name":"TransferenciaRealizadaData",
             "fields":[
                {
                   "name":"codigo_produto_operacional",

@@ -1,0 +1,8 @@
+{
+   "data":{
+      "codigo_evento_efinanceira":"{UUID}",
+      "codigo_retorno_transmissao":1,
+      "codigo_recibo_transmissao":"{UUID}",
+      "url_xml_retorno_trasnmissao":"https://bucket/arquivo.xml"
+   }
+}

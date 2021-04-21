@@ -1,0 +1,32 @@
+{
+  "namespace": "br.com.leonardozv.exemplos",
+  "name": "TransmissaoEfetuada",
+  "type": "record",
+  "fields": [
+    {
+      "name": "data",
+      "type": {
+        "name": "TransmissaoEfetuadaData",
+        "type": "record",
+        "fields": [
+          {
+            "name": "codigo_evento_efinanceira",
+            "type": "string"
+          },
+          {
+            "name": "codigo_retorno_transmissao",
+            "type": "int"
+          },
+          {
+            "name": "codigo_recibo_transmissao",
+            "type": "string"
+          },
+          {
+            "name": "url_xml_retorno_trasnmissao",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

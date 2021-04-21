@@ -1,0 +1,11 @@
+{
+   "specversion":"0.1",
+   "type":"br.com.leonardozv.exemplos.transferencia_realizada",
+   "source":"",
+   "id":"{UUID}",
+   "time":"{DATETIME-FORMATO-ISO}",
+   "messageversion":"1",
+   "transactionid":"",
+   "correlationid":"",
+   "datacontenttype":"application/avro"
+}

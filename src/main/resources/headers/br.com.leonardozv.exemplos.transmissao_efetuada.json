@@ -1,6 +1,6 @@
 {
-   "specversion":"0.1",
-   "type":"br.com.itau.evento_ted_processada",
+   "specversion":"1",
+   "type":"br.com.leonardozv.exemplos.transmissao_efetuada",
    "source":"",
    "id":"{UUID}",
    "time":"{DATETIME-FORMATO-ISO}",
