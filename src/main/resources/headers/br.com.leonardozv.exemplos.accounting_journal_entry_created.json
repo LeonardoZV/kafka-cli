@@ -1,0 +1,11 @@
+{
+   "specversion":"1",
+   "type":"br.com.leonardozv.exemplos.accounting_journal_entry_created",
+   "source":"",
+   "id":"{UUID}",
+   "time":"{DATETIME-FORMATO-ISO}",
+   "messageversion":"1",
+   "transactionid":"",
+   "correlationid":"",
+   "datacontenttype":"application/avro"
+}

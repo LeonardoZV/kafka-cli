@@ -1,28 +1,28 @@
 {
     "namespace":"br.com.leonardozv.exemplos",
-    "name":"TransferenciaRealizada",
+    "name":"AccoutingJournalEntryCreated",
     "type":"record",
     "fields":[
       {
          "name":"data",
          "type":{
-            "name":"TransferenciaRealizadaData",
+            "name":"AccoutingJournalEntryCreatedData",
             "type":"record",
             "fields":[
                {
-                  "name":"codigo_produto_operacional",
-                  "type":"int"
-               },
-               {
-                  "name":"data_hora_operacao",
+                  "name":"company_id",
                   "type":"string"
                },
                {
-                  "name":"codigo_empresa",
-                  "type":"int"
+                  "name":"accounting_date_time",
+                  "type":"string"
                },
                {
-                  "name":"valor",
+                  "name":"account_id",
+                  "type":"string"
+               },
+               {
+                  "name":"amount",
                   "type":"double"
                }
             ]

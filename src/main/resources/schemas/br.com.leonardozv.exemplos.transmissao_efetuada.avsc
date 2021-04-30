@@ -1,8 +1,8 @@
 {
-  "namespace": "br.com.leonardozv.exemplos",
-  "name": "TransmissaoEfetuada",
-  "type": "record",
-  "fields": [
+    "namespace": "br.com.leonardozv.exemplos",
+    "name": "TransmissaoEfetuada",
+    "type": "record",
+    "fields": [
     {
       "name": "data",
       "type": {
@@ -28,5 +28,5 @@
         ]
       }
     }
-  ]
+    ]
 }
