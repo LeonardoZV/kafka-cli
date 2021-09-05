@@ -2,6 +2,7 @@ package br.com.leonardozv.kafka.cli;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import br.com.leonardozv.kafka.cli.config.AppConfiguration;
 import org.apache.avro.Schema;
@@ -35,7 +36,24 @@ public class KafkaCliApplication implements CommandLineRunner {
 	private GerarPostarEventoService gerarPostarEventoService;
 		
 	public static void main(String[] args) {
-		
+
+//		int arr[]=new int[1000000];
+//
+//		for(int i=0;i<1000000;i++)
+//			arr[i]=i;
+//
+//		int sum = 0;
+//		long startTime=System.nanoTime();
+//		sum = Arrays.stream(arr).sum();
+//		double seqTime=(System.nanoTime()-startTime) / 1e6;
+//
+//		sum=0;
+//		startTime = System.nanoTime();
+//		sum = Arrays.stream(arr).parallel().sum();
+//		double parTime=(System.nanoTime()-startTime) / 1e6;
+//
+//		System.out.println(seqTime + " - " + parTime);
+
 		SpringApplication.run(KafkaCliApplication.class, args);
 		
 	}
@@ -85,7 +103,15 @@ public class KafkaCliApplication implements CommandLineRunner {
         		
         		header = Files.readString(Paths.get(this.appConfiguration.getApplicationHeaderFolderLocation() + this.appConfiguration.getSchema() + ".json"));
         		
-        	}        	
+        	}
+
+			String key = null;
+
+			if (this.appConfiguration.getKey()) {
+
+				key = Files.readString(Paths.get(this.appConfiguration.getApplicationKeyFolderLocation() + this.appConfiguration.getSchema() + ".json"));
+
+			}
         	
         	String payload = Files.readString(Paths.get(this.appConfiguration.getApplicationPayloadFolderLocation() + this.appConfiguration.getSchema() + ".json"));
         	
@@ -95,7 +121,7 @@ public class KafkaCliApplication implements CommandLineRunner {
         	
         	for (int b = 1; b <= this.appConfiguration.getBatches(); b++) {
         		
-        		this.gerarPostarEventoService.gerarPostarEvento(topico, schema, header, payload);
+        		this.gerarPostarEventoService.gerarPostarEvento(topico, schema, header, key, payload);
         		
         	}
         	

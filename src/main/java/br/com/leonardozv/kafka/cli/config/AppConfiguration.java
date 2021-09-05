@@ -8,12 +8,15 @@ public class AppConfiguration {
 
 	@Value("${application.header.folder.location}")
 	private String applicationHeaderFolderLocation;
-	
-	@Value("${application.schema.folder.location}")
-	private String applicationSchemaFolderLocation;
+
+	@Value("${application.key.folder.location}")
+	private String applicationKeyFolderLocation;
 	
 	@Value("${application.payload.folder.location}")
-	private String applicationPayloadFolderLocation;	
+	private String applicationPayloadFolderLocation;
+
+	@Value("${application.schema.folder.location}")
+	private String applicationSchemaFolderLocation;
 	
 	@Value("${action:#{null}}")
 	private String action;
@@ -32,9 +35,12 @@ public class AppConfiguration {
 	
 	@Value("#{new String('${schema:default}')}")
 	private String schema;
-	
+
 	@Value("#{new Boolean('${header:true}')}")
 	private Boolean header;
+
+	@Value("#{new Boolean('${key:false}')}")
+	private Boolean key;
 	
 	@Value("#{new Integer('${batches:1}')}")
 	private Integer batches;
@@ -50,12 +56,12 @@ public class AppConfiguration {
 		this.applicationHeaderFolderLocation = applicationHeaderFolderLocation;
 	}
 
-	public String getApplicationSchemaFolderLocation() {
-		return applicationSchemaFolderLocation;
+	public String getApplicationKeyFolderLocation() {
+		return applicationKeyFolderLocation;
 	}
 
-	public void setApplicationSchemaFolderLocation(String applicationSchemaFolderLocation) {
-		this.applicationSchemaFolderLocation = applicationSchemaFolderLocation;
+	public void setApplicationKeyFolderLocation(String applicationKeyFolderLocation) {
+		this.applicationKeyFolderLocation = applicationKeyFolderLocation;
 	}
 
 	public String getApplicationPayloadFolderLocation() {
@@ -64,6 +70,14 @@ public class AppConfiguration {
 
 	public void setApplicationPayloadFolderLocation(String applicationPayloadFolderLocation) {
 		this.applicationPayloadFolderLocation = applicationPayloadFolderLocation;
+	}
+
+	public String getApplicationSchemaFolderLocation() {
+		return applicationSchemaFolderLocation;
+	}
+
+	public void setApplicationSchemaFolderLocation(String applicationSchemaFolderLocation) {
+		this.applicationSchemaFolderLocation = applicationSchemaFolderLocation;
 	}
 
 	public String getAction() {
@@ -120,6 +134,14 @@ public class AppConfiguration {
 
 	public void setHeader(Boolean header) {
 		this.header = header;
+	}
+
+	public Boolean getKey() {
+		return key;
+	}
+
+	public void setKey(Boolean key) {
+		this.key = key;
 	}
 
 	public Integer getBatches() {

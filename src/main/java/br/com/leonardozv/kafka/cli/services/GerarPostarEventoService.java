@@ -25,7 +25,7 @@ public class GerarPostarEventoService {
 	@Autowired
 	private KafkaProducerService kafkaProducerService;
 
-    public void gerarPostarEvento(String topico, Schema schema, String header, String payload) throws Exception {
+    public void gerarPostarEvento(String topico, Schema schema, String header, String key, String payload) throws Exception {
 
     	ObjectMapper mapper = new ObjectMapper();
 
@@ -39,7 +39,7 @@ public class GerarPostarEventoService {
             	headerJsonNode = mapper.readTree(substituirTokens(header));
         	}
         	
-        	this.kafkaProducerService.produzir(topico, schema, headerJsonNode, substituirTokens(payload)).whenComplete((r,t) -> countDownLatch.countDown() );
+        	this.kafkaProducerService.produzir(topico, schema, headerJsonNode, substituirTokens(key), substituirTokens(payload)).whenComplete((r,t) -> countDownLatch.countDown() );
         	
         }
 
@@ -48,13 +48,17 @@ public class GerarPostarEventoService {
     }
     
     public String substituirTokens(String jsonString) {
-    	
-    	return jsonString
-    			.replace("{UUID}", UUID.randomUUID().toString())
-    			.replace("{DATE-FORMATO-ISO}", LocalDate.now().format(DateTimeFormatter.ISO_DATE))
-				.replace("{DATE-FORMATO-YYYYMMDD}", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-				.replace("{DATETIME-FORMATO-ISO}", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-    	
+
+		if (jsonString == null) {
+			return null;
+		} else {
+			return jsonString
+					.replace("{UUID}", UUID.randomUUID().toString())
+					.replace("{DATE-FORMATO-ISO}", LocalDate.now().format(DateTimeFormatter.ISO_DATE))
+					.replace("{DATE-FORMATO-YYYYMMDD}", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+					.replace("{DATETIME-FORMATO-ISO}", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		}
+
     }
     
 //    List<CompletableFuture<SendResult<String, Record>>> listaFutures = new ArrayList<CompletableFuture<SendResult<String, Record>>>();

@@ -31,12 +31,12 @@ public class KafkaProducerService {
 	
 	private DecoderFactory decoderFactory = new DecoderFactory();
 		
-	public CompletableFuture<SendResult<String, Record>> produzir(String topico, Schema schema, JsonNode headerJson, String payload) throws Exception {
+	public CompletableFuture<SendResult<String, Record>> produzir(String topico, Schema schema, JsonNode headerJson, String key, String payload) throws Exception {
 				
 		Decoder decoder = decoderFactory.jsonDecoder(schema, payload);		
 		DatumReader<Record> reader = new GenericDatumReader<>(schema);
 		Record genericRecord = reader.read(null, decoder);
-		ProducerRecord<String, Record> record = new ProducerRecord<>(topico, genericRecord);
+		ProducerRecord<String, Record> record = new ProducerRecord<>(topico, key, genericRecord);
 		
 		if (headerJson != null) {
 			headerJson.fields().forEachRemaining(h -> record.headers().add(h.getKey(), h.getValue().asText().getBytes()));

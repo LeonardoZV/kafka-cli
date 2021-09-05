@@ -48,7 +48,7 @@ public class KafkaConsumerService {
 			CloudEventsMessageHeader header = CloudEventsMessageHeaderMapper.from(evento.getHeaders());
 
 			log.info("Headers: " + objectMapper.writeValueAsString(header) + " | Payload: " + evento.getPayload().container().toString());
-			
+
 		}
 		
 		if (this.appConfiguration.getCommit()) {
