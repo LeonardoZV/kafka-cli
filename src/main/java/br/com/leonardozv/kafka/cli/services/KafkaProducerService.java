@@ -25,11 +25,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 public class KafkaProducerService {
 	
 	private static final Logger log = LoggerFactory.getLogger(KafkaProducerService.class);
-	
+
+	private final KafkaTemplate<String, Record> kafkaTemplate;
+
 	@Autowired
-	private KafkaTemplate<String, Record> kafkaTemplate;
-	
-	private DecoderFactory decoderFactory = new DecoderFactory();
+	public KafkaProducerService(KafkaTemplate<String, Record> kafkaTemplate) {
+		this.kafkaTemplate = kafkaTemplate;
+	}
+
+	private final DecoderFactory decoderFactory = new DecoderFactory();
 		
 	public CompletableFuture<SendResult<String, Record>> produzir(String topico, Schema schema, JsonNode headerJson, String key, String payload) throws Exception {
 				

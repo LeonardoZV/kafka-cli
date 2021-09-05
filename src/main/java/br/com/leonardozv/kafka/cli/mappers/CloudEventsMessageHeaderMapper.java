@@ -11,45 +11,71 @@ public final class CloudEventsMessageHeaderMapper {
 	public static CloudEventsMessageHeader from(MessageHeaders headers) {
 				
 		CloudEventsMessageHeader header = new CloudEventsMessageHeader();		
-		
-		if (headers.get(KafkaHeaders.RECEIVED_TOPIC) != null)
-			header.setTopic(headers.get(KafkaHeaders.RECEIVED_TOPIC).toString());
-		
-		if (headers.get(KafkaHeaders.RECEIVED_PARTITION_ID) != null)
-			header.setPartition(Integer.parseInt(headers.get(KafkaHeaders.RECEIVED_PARTITION_ID).toString()));
-		
-		if (headers.get(KafkaHeaders.OFFSET) != null)
-			header.setOffset(Long.parseLong(headers.get(KafkaHeaders.OFFSET).toString()));
-		
-		if (headers.get("specversion") != null)
-			header.setSpecversion(new String(((byte[]) headers.get("specversion")), StandardCharsets.UTF_8));
-		
-		if (headers.get("type") != null)
-			header.setType(new String(((byte[]) headers.get("type")), StandardCharsets.UTF_8));
-		
-		if (headers.get("source") != null)
-			header.setSource(new String(((byte[]) headers.get("source")), StandardCharsets.UTF_8));
-		
-		if (headers.get("id") != null)
-			header.setId(new String(((byte[]) headers.get("id")), StandardCharsets.UTF_8));
-		
-		if (headers.get("time") != null)
-			header.setTime(new String(((byte[]) headers.get("time")), StandardCharsets.UTF_8));
-		
-		if (headers.get("messageversion") != null)
-			header.setMessageversion(new String(((byte[]) headers.get("messageversion")), StandardCharsets.UTF_8));
-		
-		if (headers.get("eventversion") != null)
-			header.setEventversion(new String(((byte[]) headers.get("eventversion")), StandardCharsets.UTF_8));
-				
-		if (headers.get("transactionid") != null)
-			header.setTransactionid(new String(((byte[]) headers.get("transactionid")), StandardCharsets.UTF_8));
-		
-		if (headers.get("correlationid") != null)
-			header.setCorrelationid(new String(((byte[]) headers.get("correlationid")), StandardCharsets.UTF_8));
-				
-		if (headers.get("datacontenttype") != null)
-			header.setDatacontenttype(new String(((byte[]) headers.get("datacontenttype")), StandardCharsets.UTF_8));
+
+		Object topic = headers.get(KafkaHeaders.RECEIVED_TOPIC);
+
+		if (topic != null)
+			header.setTopic(topic.toString());
+
+		Object partition = headers.get(KafkaHeaders.RECEIVED_PARTITION_ID);
+
+		if (partition != null)
+			header.setPartition(Integer.parseInt(partition.toString()));
+
+		Object offset = headers.get(KafkaHeaders.OFFSET);
+
+		if (offset!= null)
+			header.setOffset(Long.parseLong(offset.toString()));
+
+		Object specversion = headers.get("specversion");
+
+		if (specversion != null)
+			header.setSpecversion(new String(((byte[]) specversion), StandardCharsets.UTF_8));
+
+		Object type = headers.get("type");
+
+		if (type != null)
+			header.setType(new String(((byte[]) type), StandardCharsets.UTF_8));
+
+		Object source = headers.get("source");
+
+		if (source != null)
+			header.setSource(new String(((byte[]) source), StandardCharsets.UTF_8));
+
+		Object id = headers.get("id");
+
+		if (id != null)
+			header.setId(new String(((byte[]) id), StandardCharsets.UTF_8));
+
+		Object time = headers.get("time");
+
+		if (time != null)
+			header.setTime(new String(((byte[]) time), StandardCharsets.UTF_8));
+
+		Object messageversion = headers.get("messageversion");
+
+		if (messageversion != null)
+			header.setMessageversion(new String(((byte[]) messageversion), StandardCharsets.UTF_8));
+
+		Object eventversion = headers.get("eventversion");
+
+		if (eventversion != null)
+			header.setEventversion(new String(((byte[]) eventversion), StandardCharsets.UTF_8));
+
+		Object transactionid = headers.get("transactionid");
+
+		if (transactionid != null)
+			header.setTransactionid(new String(((byte[]) transactionid), StandardCharsets.UTF_8));
+
+		Object correlationid = headers.get("correlationid");
+
+		if (correlationid != null)
+			header.setCorrelationid(new String(((byte[]) correlationid), StandardCharsets.UTF_8));
+
+		Object datacontenttype = headers.get("datacontenttype");
+
+		if (datacontenttype != null)
+			header.setDatacontenttype(new String(((byte[]) datacontenttype), StandardCharsets.UTF_8));
 		
 		return header;
 		

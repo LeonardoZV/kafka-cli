@@ -23,14 +23,18 @@ import io.confluent.kafka.serializers.GenericContainerWithVersion;
 public class KafkaConsumerService {
 	
 	private static final Logger log = LoggerFactory.getLogger(KafkaConsumerService.class);
-	
-	@Autowired
-	private AppConfiguration appConfiguration;
-	
-	@Autowired
-    private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final AppConfiguration appConfiguration;
+
+    private final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
+
+	@Autowired
+	public KafkaConsumerService(AppConfiguration appConfiguration, KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry) {
+		this.appConfiguration = appConfiguration;
+		this.kafkaListenerEndpointRegistry = kafkaListenerEndpointRegistry;
+	}
+
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	
 	public String[] obterTopicos() {
 		return this.appConfiguration.getTopics();

@@ -18,12 +18,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class GerarPostarEventoService {
 
 //	private static Logger log = LoggerFactory.getLogger(GerarPostarEventoService.class);
-	
+
+	private final AppConfiguration appConfiguration;
+
+	private final KafkaProducerService kafkaProducerService;
+
 	@Autowired
-	private AppConfiguration appConfiguration;
-	
-	@Autowired
-	private KafkaProducerService kafkaProducerService;
+	public GerarPostarEventoService(AppConfiguration appConfiguration, KafkaProducerService kafkaProducerService) {
+		this.appConfiguration = appConfiguration;
+		this.kafkaProducerService = kafkaProducerService;
+	}
 
     public void gerarPostarEvento(String topico, Schema schema, String header, String key, String payload) throws Exception {
 
