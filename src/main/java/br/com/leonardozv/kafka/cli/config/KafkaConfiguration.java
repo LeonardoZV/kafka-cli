@@ -82,6 +82,9 @@ public class KafkaConfiguration {
 	
 	@Value("${kafka.consumer.max-poll-records}")
 	private String kafkaMaxPollRecords;
+
+	@Value("${kafka.consumer.receive-buffer-bytes}")
+	private int kafkaReceiveBufferBytes;
 	
 	@Value("${kafka.consumer.key-deserializer}")
 	private String kafkaKeyDeserializer;
@@ -102,8 +105,14 @@ public class KafkaConfiguration {
 	private int kafkaBatchSize;
 	
 	@Value("${kafka.producer.linger-ms}")
-	private int kafkaLingerMs;	
-	
+	private int kafkaLingerMs;
+
+	@Value("${kafka.producer.max-request-size}")
+	private int kafkaMaxRequestSize;
+
+	@Value("${kafka.producer.buffer-memory}")
+	private int kafkaBufferMemory;
+
 	@Value("${kafka.producer.compression-type}")
 	private String kafkaCompressionType;	
 	
@@ -138,6 +147,7 @@ public class KafkaConfiguration {
 		props.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, kafkaPartitionAssignmentStrategy);
 		props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, kafkaMaxPollIntervalMs);
 		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, kafkaMaxPollRecords);
+		props.put(ProducerConfig.RECEIVE_BUFFER_CONFIG, kafkaReceiveBufferBytes);
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaKeyDeserializer);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class.getName());
 		props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, kafakaValueDeserializer);
@@ -191,7 +201,10 @@ public class KafkaConfiguration {
 		props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, kafkaEnableIdempotence);
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, kafkaBatchSize);
 		props.put(ProducerConfig.LINGER_MS_CONFIG, kafkaLingerMs);
-		props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, kafkaCompressionType);		
+		props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, kafkaMaxRequestSize);
+		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, kafkaBufferMemory);
+		props.put(ProducerConfig.SEND_BUFFER_CONFIG, -1);
+		props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, kafkaCompressionType);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, kafkaKeySerializer);
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, kafakaValueSerializer);
 		
@@ -199,9 +212,7 @@ public class KafkaConfiguration {
 		props.put(KafkaAvroSerializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE, schemaRegistryBasicAuthCredentialsSource);
 		props.put(KafkaAvroSerializerConfig.USER_INFO_CONFIG, schemaRegistryBasicAuthUserInfo);
 		props.put(KafkaAvroSerializerConfig.AUTO_REGISTER_SCHEMAS, schemaRegistryAutoRegisterSchemas);
-//		props.put(KafkaAvroSerializerConfig.VALUE_SUBJECT_NAME_STRATEGY, schemaRegistryValueSubjectNameStrategy);
-//		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 335544320);
-		props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 5048576);
+//		props.put(KafkaAvroSerializerConfig.VALUE_SUBJECT_NAME_STRATEGY, schemaRegistryValueSubjectNameStrategy);W
 
         return props;
     }
