@@ -158,6 +158,7 @@ public class KafkaConfiguration {
 //		props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, schemaRegistryspecificAvroReader);
 		        
         return props;
+
     }
 	
 	@Bean

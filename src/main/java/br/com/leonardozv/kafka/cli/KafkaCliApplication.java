@@ -2,7 +2,6 @@ package br.com.leonardozv.kafka.cli;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import br.com.leonardozv.kafka.cli.config.AppConfiguration;
 import org.apache.avro.Schema;
@@ -21,22 +20,26 @@ import br.com.leonardozv.kafka.cli.services.KafkaProducerService;
 @SpringBootApplication
 public class KafkaCliApplication implements CommandLineRunner {
 	
-	private static Logger log = LoggerFactory.getLogger(KafkaCliApplication.class);
-	
+	private final static Logger log = LoggerFactory.getLogger(KafkaCliApplication.class);
+
+	private final AppConfiguration appConfiguration;
+
+	private final KafkaConsumerService kafkaConsumerService;
+
+	private final KafkaProducerService kafkaProducerService;
+
+	private final GerarPostarEventoService gerarPostarEventoService;
+
 	@Autowired
-	private AppConfiguration appConfiguration;
-	
-	@Autowired
-	private KafkaConsumerService kafkaConsumerService;
-		
-	@Autowired
-	private KafkaProducerService kafkaProducerService;
-	
-	@Autowired
-	private GerarPostarEventoService gerarPostarEventoService;
-		
+	public KafkaCliApplication(AppConfiguration appConfiguration, KafkaConsumerService kafkaConsumerService, KafkaProducerService kafkaProducerService, GerarPostarEventoService gerarPostarEventoService) {
+		this.appConfiguration = appConfiguration;
+		this.kafkaConsumerService = kafkaConsumerService;
+		this.kafkaProducerService = kafkaProducerService;
+		this.gerarPostarEventoService = gerarPostarEventoService;
+	}
+
 	public static void main(String[] args) {
-		
+
 		SpringApplication.run(KafkaCliApplication.class, args);
 
 	}
