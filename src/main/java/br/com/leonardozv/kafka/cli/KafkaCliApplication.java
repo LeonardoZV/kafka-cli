@@ -36,26 +36,9 @@ public class KafkaCliApplication implements CommandLineRunner {
 	private GerarPostarEventoService gerarPostarEventoService;
 		
 	public static void main(String[] args) {
-
-//		int arr[]=new int[1000000];
-//
-//		for(int i=0;i<1000000;i++)
-//			arr[i]=i;
-//
-//		int sum = 0;
-//		long startTime=System.nanoTime();
-//		sum = Arrays.stream(arr).sum();
-//		double seqTime=(System.nanoTime()-startTime) / 1e6;
-//
-//		sum=0;
-//		startTime = System.nanoTime();
-//		sum = Arrays.stream(arr).parallel().sum();
-//		double parTime=(System.nanoTime()-startTime) / 1e6;
-//
-//		System.out.println(seqTime + " - " + parTime);
-
-		SpringApplication.run(KafkaCliApplication.class, args);
 		
+		SpringApplication.run(KafkaCliApplication.class, args);
+
 	}
 	
     @Override
