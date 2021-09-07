@@ -29,7 +29,7 @@ public class GerarPostarEventoService {
 		this.kafkaProducerService = kafkaProducerService;
 	}
 
-    public void gerarPostarEvento(String topico, Schema schema, String header, String key, String payload) throws Exception {
+    public void gerarPostarEvento(String topico, Schema schema, String tokenizedHeader, String tokenizedKey, String tokenizedValue) throws Exception {
 
     	ObjectMapper mapper = new ObjectMapper();
 
@@ -39,11 +39,23 @@ public class GerarPostarEventoService {
         	
         	JsonNode headerJsonNode = null;
         	
-        	if (this.appConfiguration.getHeader()) {
-            	headerJsonNode = mapper.readTree(substituirTokens(header));
+        	if (tokenizedHeader != null) {
+            	headerJsonNode = mapper.readTree(substituirTokens(tokenizedHeader));
         	}
-        	
-        	this.kafkaProducerService.produzir(topico, schema, headerJsonNode, substituirTokens(key), substituirTokens(payload)).whenComplete((r,t) -> countDownLatch.countDown() );
+
+			String key = null;
+
+			if (tokenizedKey != null) {
+				key = substituirTokens(tokenizedKey);
+			}
+
+			String value = null;
+
+			if (tokenizedValue != null) {
+				value = substituirTokens(tokenizedValue);
+			}
+
+        	this.kafkaProducerService.produzir(topico, schema, headerJsonNode, key, value).whenComplete((r,t) -> countDownLatch.countDown());
         	
         }
 
@@ -53,15 +65,11 @@ public class GerarPostarEventoService {
     
     public String substituirTokens(String jsonString) {
 
-		if (jsonString == null) {
-			return null;
-		} else {
-			return jsonString
-					.replace("{UUID}", UUID.randomUUID().toString())
-					.replace("{DATE-FORMATO-ISO}", LocalDate.now().format(DateTimeFormatter.ISO_DATE))
-					.replace("{DATE-FORMATO-YYYYMMDD}", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
-					.replace("{DATETIME-FORMATO-ISO}", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-		}
+		return jsonString
+				.replace("{UUID}", UUID.randomUUID().toString())
+				.replace("{DATE-FORMATO-ISO}", LocalDate.now().format(DateTimeFormatter.ISO_DATE))
+				.replace("{DATE-FORMATO-YYYYMMDD}", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
+				.replace("{DATETIME-FORMATO-ISO}", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
     }
     

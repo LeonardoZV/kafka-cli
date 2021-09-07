@@ -36,7 +36,7 @@ public class AppConfiguration {
 	@Value("#{new String('${schema:default}')}")
 	private String schema;
 
-	@Value("#{new Boolean('${header:true}')}")
+	@Value("#{new Boolean('${header:false}')}")
 	private Boolean header;
 
 	@Value("#{new Boolean('${key:false}')}")
