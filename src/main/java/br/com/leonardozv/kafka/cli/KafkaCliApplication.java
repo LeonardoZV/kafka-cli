@@ -56,39 +56,39 @@ public class KafkaCliApplication implements CommandLineRunner {
     		log.error("Parâmetro 'action' inválido.");
     		return;
     	}
-    	
+
     	if (this.appConfiguration.getAction().equals("consume")) {
 
     		if (this.appConfiguration.getTopics()[0].equals("default")) {
     			log.error("Parâmetro 'topics' não informado.");
     		}
-    		
+
     		this.kafkaConsumerService.start();
-    		
+
     	}
-    	
+
     	if (this.appConfiguration.getAction().equals("produce")) {
-    		    		
+
         	if (this.appConfiguration.getTopic().equals("default")) {
         		log.error("Parâmetro 'topic' não informado.");
         		return;
         	}
-        	
+
         	String topico = this.appConfiguration.getTopic();
-        	
+
         	if (this.appConfiguration.getSchema().equals("default")) {
         		log.error("Parâmetro 'schema' não informado.");
         		return;
         	}
-        	
+
         	Schema schema = new Schema.Parser().parse(Files.readString(Paths.get(this.appConfiguration.getApplicationSchemaFolderLocation() + this.appConfiguration.getSchema() + ".avsc")));
-        	
+
         	String header = null;
-        	
+
         	if (this.appConfiguration.getHeader()) {
-        		
+
         		header = Files.readString(Paths.get(this.appConfiguration.getApplicationHeaderFolderLocation() + this.appConfiguration.getSchema() + ".json"));
-        		
+
         	}
 
 			String key = null;
@@ -98,23 +98,23 @@ public class KafkaCliApplication implements CommandLineRunner {
 				key = Files.readString(Paths.get(this.appConfiguration.getApplicationKeyFolderLocation() + this.appConfiguration.getSchema() + ".json"));
 
 			}
-        	
+
         	String payload = Files.readString(Paths.get(this.appConfiguration.getApplicationPayloadFolderLocation() + this.appConfiguration.getSchema() + ".json"));
-        	
+
         	StopWatch sw = new StopWatch();
-        	
+
         	sw.start();
-        	
+
         	for (int b = 1; b <= this.appConfiguration.getBatches(); b++) {
-        		
+
         		this.gerarPostarEventoService.gerarPostarEvento(topico, schema, header, key, payload);
-        		
+
         	}
-        	
+
         	sw.stop();
-        	
+
         	log.info("Foram postados " + (this.appConfiguration.getBatches() * this.appConfiguration.getEvents()) + " eventos em " + sw.getTotalTimeSeconds() + " segundos, ficando " + (this.appConfiguration.getBatches() * this.appConfiguration.getEvents()) / sw.getTotalTimeSeconds() + " evt/s.");
-        	
+
     	}
     	
     }

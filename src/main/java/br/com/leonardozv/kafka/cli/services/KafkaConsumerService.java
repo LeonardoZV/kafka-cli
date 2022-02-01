@@ -1,9 +1,15 @@
 package br.com.leonardozv.kafka.cli.services;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import br.com.leonardozv.kafka.cli.config.AppConfiguration;
+import br.com.leonardozv.kafka.cli.config.KafkaConfiguration;
 import br.com.leonardozv.kafka.cli.models.CloudEventsMessageHeader;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.Metric;
+import org.apache.kafka.common.MetricName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +32,14 @@ public class KafkaConsumerService {
 
 	private final AppConfiguration appConfiguration;
 
-    private final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
+    private final KafkaConfiguration kafkaConfiguration;
+
+	private final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
 	@Autowired
-	public KafkaConsumerService(AppConfiguration appConfiguration, KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry) {
+	public KafkaConsumerService(AppConfiguration appConfiguration, KafkaConfiguration kafkaConfiguration, KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry) {
 		this.appConfiguration = appConfiguration;
+		this.kafkaConfiguration = kafkaConfiguration;
 		this.kafkaListenerEndpointRegistry = kafkaListenerEndpointRegistry;
 	}
 
@@ -70,5 +79,17 @@ public class KafkaConsumerService {
         listenerContainer.start();
 
     }
+
+	public void printarMetricas() {
+
+		KafkaConsumer<?, ?> consumer = new KafkaConsumer<>(kafkaConfiguration.consumerConfigs());
+
+		for (Entry<MetricName, ? extends Metric> entry : consumer.metrics().entrySet()) {
+
+			log.info(entry.getKey() + " : " + entry.getValue().metricValue());
+
+		}
+
+	}
 	
 }

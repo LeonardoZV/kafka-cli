@@ -1,8 +1,12 @@
 {
   "data":{
-    "company_id":"341",
-    "accounting_date_time":"2017-12-31T05:00:00.000Z",
-    "account_id":"1111111",
-    "amount":1
+    "accounting_date": "2017-12-31",
+    "company_id": "8cc87e5f-b589-4069-b512-0dc367ed1071",
+    "gaap_id": 1,
+    "balance_version_id": 1,
+    "account_id": "1111111",
+    "debit_amount": 1,
+    "credit_amount": 0,
+    "movement_amount": -1
   }
 }

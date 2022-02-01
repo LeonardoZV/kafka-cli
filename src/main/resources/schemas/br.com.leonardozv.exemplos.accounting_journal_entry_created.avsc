@@ -1,30 +1,47 @@
 {
     "namespace":"br.com.leonardozv.exemplos",
-    "name":"AccoutingJournalEntryCreated",
+    "name":"AccountingJournalEntryCreated",
     "type":"record",
     "fields":[
       {
          "name":"data",
          "type":{
-            "name":"AccoutingJournalEntryCreatedData",
+            "name":"AccountingJournalEntryCreatedData",
             "type":"record",
             "fields":[
-               {
-                  "name":"company_id",
-                  "type":"string"
-               },
-               {
-                  "name":"accounting_date_time",
-                  "type":"string"
-               },
-               {
-                  "name":"account_id",
-                  "type":"string"
-               },
-               {
-                  "name":"amount",
-                  "type":"double"
-               }
+
+              {
+                "name":"accounting_date",
+                "type":"string"
+              },
+              {
+                "name":"company_id",
+                "type":"string"
+              },
+              {
+                "name":"gaap_id",
+                "type":"int"
+              },
+              {
+                "name":"balance_version_id",
+                "type":"int"
+              },
+              {
+                "name":"account_id",
+                "type":"string"
+              },
+              {
+                "name":"debit_amount",
+                "type":"double"
+              },
+              {
+                "name":"credit_amount",
+                "type":"double"
+              },
+              {
+                "name":"movement_amount",
+                "type":"double"
+              }
             ]
          }
       }
