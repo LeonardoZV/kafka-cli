@@ -1,1 +1,4 @@
 # kafka-cli-java
+[![Coverage](http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/api/project_badges/measure?project=LeonardoZV_kafka-cli-java&metric=coverage&token=95e191b75b8ac28a0ca5c469ef95633093b35152)](http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/dashboard?id=LeonardoZV_kafka-cli-java)
+![Mutation Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/LeonardoZV/e5a4b68734f8ee29d54ecfe7b78b1cfb/raw/kafka-cli-java-mutation-coverage-badge.json)
+[![Quality Gate Status](http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/api/project_badges/measure?project=LeonardoZV_kafka-cli-java&metric=alert_status&token=95e191b75b8ac28a0ca5c469ef95633093b35152)](http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/dashboard?id=LeonardoZV_kafka-cli-java)
