@@ -1,6 +1,8 @@
 name: Nightly Mutation Testing
 
 on:
+  release:
+    types: [created]
   schedule:
     - cron: '*/5 * * * *'
 
@@ -37,9 +39,10 @@ jobs:
         cache: maven
     - name: Get the repository name without owner
       run: echo REPOSITORY_NAME=${GITHUB_REPOSITORY#*\/} >> $GITHUB_ENV
-    - name: Execute Tests, Code Coverage, Mutation Testing, Publish Results to Sonar and Quality Gate Analysis
+    - name: Execute Tests, Code Coverage, Mutation Testing and Publish Results to Sonar
       run: mvn test jacoco:report pitest:mutationCoverage sonar:sonar -Dsonar.host.url=http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/ -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.projectKey=${{ github.repository_owner }}_${{ env.REPOSITORY_NAME }} -Dsonar.qualitygate.wait --batch-mode --file pom.xml
     - name: Get Sonar Mutation Coverage Score
+      if: always()
       id: sonar_request
       uses: fjogeleit/http-request-action@v1
       with:
@@ -47,6 +50,7 @@ jobs:
         method: "GET"
         username: ${{ secrets.SONAR_TOKEN }}
     - name: Create Mutation Coverage Badge
+      if: always()
       uses: schneegans/dynamic-badges-action@v1.4.0
       with:
         auth: ${{ secrets.GIST_TOKEN }}
@@ -57,3 +61,20 @@ jobs:
         valColorRange: ${{ fromJson(steps.sonar_request.outputs.response).component.measures[0].value }}
         maxColorRange: 100
         minColorRange: 0
+#    - name: SonarQube Quality Gate Check
+#      id: sonarqube-quality-gate-check
+#      uses: sonarsource/sonarqube-quality-gate-action@master
+#      timeout-minutes: 5
+#      env:
+#         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#         SONAR_HOST_URL: "http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/"
+#      with:
+#        scanMetadataReportFile: target/sonar/report-task.txt
+#    - name: "Example show SonarQube Quality Gate Status value"
+#      run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
+#    - name: Fail Job when Quality Gate fails
+#      if: ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }} == "FAILED"
+#      uses: actions/github-script@v6
+#      with:
+#        script: |
+#            core.setFailed('QUALITY GATE STATUS: FAILED')
