@@ -18,9 +18,9 @@ public class CustomKafkaAvroSerializer extends AbstractKafkaAvroSerializer imple
 	}
 
 	@Override
-	public byte[] serialize(String topic, Object record) {
+	public byte[] serialize(String topic, Object message) {
 		
-		return serializeImpl(getSubjectName(topic, false, record, AvroSchemaUtils.getSchema(record)), record);
+		return serializeImpl(getSubjectName(topic, false, message, AvroSchemaUtils.getSchema(message)), message);
 		
 	}
 }

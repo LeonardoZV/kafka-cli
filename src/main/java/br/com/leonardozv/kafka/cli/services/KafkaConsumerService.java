@@ -1,15 +1,10 @@
 package br.com.leonardozv.kafka.cli.services;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import br.com.leonardozv.kafka.cli.config.AppConfiguration;
-import br.com.leonardozv.kafka.cli.config.KafkaConfiguration;
 import br.com.leonardozv.kafka.cli.models.CloudEventsMessageHeader;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.Metric;
-import org.apache.kafka.common.MetricName;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +16,9 @@ import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.confluent.kafka.serializers.GenericContainerWithVersion;
 
 import br.com.leonardozv.kafka.cli.mappers.CloudEventsMessageHeaderMapper;
-import io.confluent.kafka.serializers.GenericContainerWithVersion;
 
 @Service
 public class KafkaConsumerService {
@@ -32,14 +27,11 @@ public class KafkaConsumerService {
 
 	private final AppConfiguration appConfiguration;
 
-    private final KafkaConfiguration kafkaConfiguration;
-
 	private final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
 	@Autowired
-	public KafkaConsumerService(AppConfiguration appConfiguration, KafkaConfiguration kafkaConfiguration, KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry) {
+	public KafkaConsumerService(AppConfiguration appConfiguration, KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry) {
 		this.appConfiguration = appConfiguration;
-		this.kafkaConfiguration = kafkaConfiguration;
 		this.kafkaListenerEndpointRegistry = kafkaListenerEndpointRegistry;
 	}
 
@@ -54,21 +46,19 @@ public class KafkaConsumerService {
 	}
 	
 	@KafkaListener(id = "kafka-cli-java", autoStartup = "false", containerFactory = "kafkaListenerContainerFactory", topics = "#{kafkaConsumerService.obterTopicos()}", groupId = "#{kafkaConsumerService.obterGroupId()}", idIsGroup = false)
-	private void consumir(List<Message<GenericContainerWithVersion>> listaEventos, Acknowledgment ack) throws Exception {		
+	private void consumir(List<Message<GenericContainerWithVersion>> listaEventos, Acknowledgment ack) throws JsonProcessingException {
 		
 		for(Message<GenericContainerWithVersion> evento : listaEventos) {	
 			
 			CloudEventsMessageHeader header = CloudEventsMessageHeaderMapper.from(evento.getHeaders());
 
-			log.info("Headers: " + objectMapper.writeValueAsString(header) + " | Payload: " + evento.getPayload().container().toString());
+			log.info("Headers: {} | Payload: {}", objectMapper.writeValueAsString(header), evento.getPayload().container());
 
 		}
 		
-		if (this.appConfiguration.getCommit()) {
+		if (Boolean.TRUE.equals(this.appConfiguration.getCommit())) {
 			ack.acknowledge();
 		}
-
-		log.info("Batch eventos consumidos.");
 		
 	}
 	
@@ -79,17 +69,5 @@ public class KafkaConsumerService {
         listenerContainer.start();
 
     }
-
-	public void printarMetricas() {
-
-		KafkaConsumer<?, ?> consumer = new KafkaConsumer<>(kafkaConfiguration.consumerConfigs());
-
-		for (Entry<MetricName, ? extends Metric> entry : consumer.metrics().entrySet()) {
-
-			log.info(entry.getKey() + " : " + entry.getValue().metricValue());
-
-		}
-
-	}
 	
 }

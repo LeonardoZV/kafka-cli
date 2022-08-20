@@ -156,7 +156,7 @@ public class KafkaConfiguration {
 		props.put(KafkaAvroDeserializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE, schemaRegistryBasicAuthCredentialsSource);
 		props.put(KafkaAvroDeserializerConfig.USER_INFO_CONFIG, schemaRegistryBasicAuthUserInfo);
 //		props.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, schemaRegistryspecificAvroReader);
-		        
+
         return props;
 
     }
@@ -209,7 +209,7 @@ public class KafkaConfiguration {
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, kafkaKeySerializer);
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, kafakaValueSerializer);
 		
-		props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl); 
+		props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
 		props.put(KafkaAvroSerializerConfig.BASIC_AUTH_CREDENTIALS_SOURCE, schemaRegistryBasicAuthCredentialsSource);
 		props.put(KafkaAvroSerializerConfig.USER_INFO_CONFIG, schemaRegistryBasicAuthUserInfo);
 		props.put(KafkaAvroSerializerConfig.AUTO_REGISTER_SCHEMAS, schemaRegistryAutoRegisterSchemas);

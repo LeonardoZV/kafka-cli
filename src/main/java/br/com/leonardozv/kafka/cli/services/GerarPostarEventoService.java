@@ -1,5 +1,6 @@
 package br.com.leonardozv.kafka.cli.services;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +30,7 @@ public class GerarPostarEventoService {
 		this.kafkaProducerService = kafkaProducerService;
 	}
 
-    public void gerarPostarEvento(String topico, Schema schema, String tokenizedHeader, String tokenizedKey, String tokenizedValue) throws Exception {
+    public void gerarPostarEvento(String topico, Schema schema, String tokenizedHeader, String tokenizedKey, String tokenizedValue) throws IOException, InterruptedException {
 
     	ObjectMapper mapper = new ObjectMapper();
 

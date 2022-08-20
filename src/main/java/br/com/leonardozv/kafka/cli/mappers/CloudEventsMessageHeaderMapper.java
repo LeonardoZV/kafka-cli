@@ -8,6 +8,10 @@ import java.nio.charset.StandardCharsets;
 
 public final class CloudEventsMessageHeaderMapper {
 
+	private CloudEventsMessageHeaderMapper() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	public static CloudEventsMessageHeader from(MessageHeaders headers) {
 				
 		CloudEventsMessageHeader header = new CloudEventsMessageHeader();		
