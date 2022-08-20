@@ -48,7 +48,7 @@ jobs:
       with:
         auth: ${{ secrets.GIST_TOKEN }}
         gistID: e5a4b68734f8ee29d54ecfe7b78b1cfb
-        filename: ${{ github.event.repository.owner.name }}-${{ github.event.repository.name }}-mutation-coverage-badge.json
+        filename: ${{ github.event.repository.name }}-mutation-coverage-badge.json
         label: mutation coverage
         message: ${{ fromJson(steps.myRequest.outputs.response).component.measures[0].value }}%
         valColorRange: ${{ fromJson(steps.myRequest.outputs.response).component.measures[0].value }}
