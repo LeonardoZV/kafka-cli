@@ -25,8 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Mutation Testing
     steps:
-    - name: Get the repository name without owner
-      run: echo REPOSITORY_NAME=${GITHUB_REPOSITORY#*\/} >> $GITHUB_ENV
     - uses: actions/checkout@v3
     - name: Git fetch unshallow (necessary to sonar)
       run: git fetch --unshallow
@@ -36,13 +34,15 @@ jobs:
         java-version: '17'
         distribution: 'corretto'
         cache: maven
+    - name: Get the repository name without owner
+      run: echo REPOSITORY_NAME=${GITHUB_REPOSITORY#*\/} >> $GITHUB_ENV
     - name: Execute Tests, Code Coverage, Mutation Testing, Publish Results to Sonar and Quality Gate Analysis
-      run: mvn test jacoco:report pitest:mutationCoverage sonar:sonar -Dsonar.host.url=http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/ -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.projectKey=${{ github.repository_owner }}-${{ env.REPOSITORY_NAME }} -Dsonar.qualitygate.wait --batch-mode --file pom.xml
+      run: mvn test jacoco:report pitest:mutationCoverage sonar:sonar -Dsonar.host.url=http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/ -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.projectKey=${{ github.repository_owner }}_${{ env.REPOSITORY_NAME }} -Dsonar.qualitygate.wait --batch-mode --file pom.xml
     - name: Get Sonar Mutation Coverage Score
       id: myRequest
       uses: fjogeleit/http-request-action@v1
       with:
-        url: "http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/api/measures/component?component=${{ github.repository_owner }}-${{ env.REPOSITORY_NAME }}&metricKeys=dc5_mutationAnalysis_mutations_coverage"
+        url: "http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/api/measures/component?component=${{ github.repository_owner }}_${{ env.REPOSITORY_NAME }}&metricKeys=dc5_mutationAnalysis_mutations_coverage"
         method: "GET"
         username: ${{ secrets.SONAR_TOKEN }}
     - name: Create Mutation Coverage Badge
