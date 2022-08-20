@@ -1,0 +1,56 @@
+name: Nightly Mutation Testing
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+
+jobs:
+  check_date:
+    runs-on: ubuntu-latest
+    name: Check Latest Commit
+    outputs:
+      should_run: ${{ steps.should_run.outputs.should_run }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: print latest_commit
+        run: echo ${{ github.sha }}
+      - id: should_run
+        continue-on-error: true
+        name: Check latest commit is less than a day
+        run: test -z $(git rev-list --after="5 minutes" ${{ github.sha }}) && echo "::set-output name=should_run::false" || echo "::set-output name=should_run::true"
+    
+  test:
+    needs: check_date
+    if: ${{ needs.check_date.outputs.should_run == 'true' }}
+    runs-on: ubuntu-latest
+    name: Mutation Testing
+    steps:
+    - uses: actions/checkout@v3
+    - name: Git fetch unshallow (necessary to sonar)
+      run: git fetch --unshallow
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+        cache: maven
+    - name: Execute Tests, Code Coverage, Mutation Testing, Publish Results to Sonar and Quality Gate Analysis
+      run: mvn test jacoco:report pitest:mutationCoverage sonar:sonar -Dsonar.host.url=http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/ -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.projectKey=${{ github.event.repository.owner.name }}_${{ github.event.repository.name }} -Dsonar.qualitygate.wait --batch-mode --file pom.xml
+    - name: Get Sonar Mutation Coverage Score
+      id: myRequest
+      uses: fjogeleit/http-request-action@v1
+      with:
+        url: "http://leozvasconcellos-sonarqube.eastus.azurecontainer.io:9000/api/measures/component?component=${{ github.event.repository.owner.name }}_${{ github.event.repository.name }}&metricKeys=dc5_mutationAnalysis_mutations_coverage"
+        method: "GET"
+        username: ${{ secrets.SONAR_TOKEN }}
+    - name: Create Mutation Coverage Badge
+      uses: schneegans/dynamic-badges-action@v1.4.0
+      with:
+        auth: ${{ secrets.GIST_TOKEN }}
+        gistID: e5a4b68734f8ee29d54ecfe7b78b1cfb
+        filename: ${{ github.event.repository.owner.name }}-${{ github.event.repository.name }}-mutation-coverage-badge.json
+        label: mutation coverage
+        message: ${{ fromJson(steps.myRequest.outputs.response).component.measures[0].value }}%
+        valColorRange: ${{ fromJson(steps.myRequest.outputs.response).component.measures[0].value }}
+        maxColorRange: 100
+        minColorRange: 0
