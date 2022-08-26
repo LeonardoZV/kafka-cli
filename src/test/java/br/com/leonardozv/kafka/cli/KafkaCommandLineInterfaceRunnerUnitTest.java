@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ class KafkaCommandLineInterfaceRunnerUnitTest {
 
         assertDoesNotThrow(() -> this.kafkaCommandLineInterfaceRunner.run());
 
-        verify(this.commandLineInterfaceService, Mockito.times(1)).execute();
+        verify(this.commandLineInterfaceService).execute();
 
     }
 
