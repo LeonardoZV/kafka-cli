@@ -1,8 +1,6 @@
 package br.com.leonardozv.kafka.cli.services;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData.Record;
 import org.apache.avro.generic.GenericDatumReader;
@@ -10,26 +8,23 @@ import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
-@Service
 public class KafkaProducerService {
 
-	private final KafkaTemplate<String, Record> kafkaTemplate;
+	protected final KafkaTemplate<String, Record> kafkaTemplate;
 
-	@Autowired
+	private final DecoderFactory decoderFactory = new DecoderFactory();
+
 	public KafkaProducerService(KafkaTemplate<String, Record> kafkaTemplate) {
 		this.kafkaTemplate = kafkaTemplate;
 	}
-
-	private final DecoderFactory decoderFactory = new DecoderFactory();
 		
-	public CompletableFuture<SendResult<String, Record>> produzir(String topico, Schema schema, JsonNode headerJson, String key, String value) throws IOException {
+	public CompletableFuture<SendResult<String, Record>> produce(String topico, Schema schema, String key, JsonNode headerJson, String value) throws IOException {
 				
 		Decoder decoder = decoderFactory.jsonDecoder(schema, value);
 		DatumReader<Record> reader = new GenericDatumReader<>(schema);
@@ -41,12 +36,6 @@ public class KafkaProducerService {
 		}
 
 		return this.kafkaTemplate.send(producerRecord).completable();
-		
-	}
-	
-	public void flush() {
-		
-		this.kafkaTemplate.flush();
 		
 	}
 

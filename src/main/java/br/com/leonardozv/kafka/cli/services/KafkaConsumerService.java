@@ -1,13 +1,14 @@
 package br.com.leonardozv.kafka.cli.services;
 
-import java.util.List;
-
 import br.com.leonardozv.kafka.cli.config.AppConfiguration;
-import br.com.leonardozv.kafka.cli.models.CloudEventsMessageHeader;
+import br.com.leonardozv.kafka.cli.models.CompleteMessageHeader;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import io.confluent.kafka.serializers.GenericContainerWithVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.listener.MessageListenerContainer;
@@ -15,44 +16,38 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.confluent.kafka.serializers.GenericContainerWithVersion;
-
-import br.com.leonardozv.kafka.cli.mappers.CloudEventsMessageHeaderMapper;
+import java.util.List;
 
 @Service
 public class KafkaConsumerService {
 	
 	private static final Logger log = LoggerFactory.getLogger(KafkaConsumerService.class);
 
+	private static final String APPLICATION_ID = "kafka-cli";
+
+	private final ObjectMapper objectMapper = new ObjectMapper();
+
 	private final AppConfiguration appConfiguration;
 
 	private final KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
-	@Autowired
 	public KafkaConsumerService(AppConfiguration appConfiguration, KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry) {
+		this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		this.appConfiguration = appConfiguration;
 		this.kafkaListenerEndpointRegistry = kafkaListenerEndpointRegistry;
 	}
 
-	private final ObjectMapper objectMapper = new ObjectMapper();
-	
-	public String[] obterTopicos() {
-		return this.appConfiguration.getTopics();
-	}
-	
-	public String obterGroupId() {
-		return this.appConfiguration.getGroupId();
-	}
-	
-	@KafkaListener(id = "kafka-cli-java", autoStartup = "false", containerFactory = "kafkaListenerContainerFactory", topics = "#{kafkaConsumerService.obterTopicos()}", groupId = "#{kafkaConsumerService.obterGroupId()}", idIsGroup = false)
-	private void consumir(List<Message<GenericContainerWithVersion>> listaEventos, Acknowledgment ack) throws JsonProcessingException {
-		
-		for(Message<GenericContainerWithVersion> evento : listaEventos) {	
-			
-			CloudEventsMessageHeader header = CloudEventsMessageHeaderMapper.from(evento.getHeaders());
+	@KafkaListener(id = APPLICATION_ID, topics = "#{appConfiguration.getTopics()}", groupId = "#{appConfiguration.getGroupId()}", autoStartup = "false", idIsGroup = false, batch = "true")
+	public void consume(List<Message<GenericContainerWithVersion>> listaEventos, Acknowledgment ack) throws JsonProcessingException {
 
-			log.info("Headers: {} | Payload: {}", objectMapper.writeValueAsString(header), evento.getPayload().container());
+		for(Message<GenericContainerWithVersion> evento : listaEventos) {
+
+			CompleteMessageHeader header = this.objectMapper.convertValue(evento.getHeaders(), CompleteMessageHeader.class);
+
+			if (log.isInfoEnabled()) {
+				log.info("Headers: {} | Payload: {}", this.objectMapper.writeValueAsString(header), evento.getPayload().container());
+			}
 
 		}
 		
@@ -63,10 +58,12 @@ public class KafkaConsumerService {
 	}
 	
     public void start() {
-    	
-        MessageListenerContainer listenerContainer = kafkaListenerEndpointRegistry.getListenerContainer("kafka-cli-java");
 
-        listenerContainer.start();
+		MessageListenerContainer listenerContainer = this.kafkaListenerEndpointRegistry.getListenerContainer(APPLICATION_ID);
+
+		if (listenerContainer != null) {
+			listenerContainer.start();
+		}
 
     }
 	

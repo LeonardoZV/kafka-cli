@@ -1,21 +1,23 @@
 package br.com.leonardozv.kafka.cli.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Getter
 public class AppConfiguration {
 
-	@Value("${application.header.folder.location}")
+	@Value("${application.header.folder.location:#{null}}")
 	private String applicationHeaderFolderLocation;
 
-	@Value("${application.key.folder.location}")
+	@Value("${application.key.folder.location:#{null}}")
 	private String applicationKeyFolderLocation;
 	
-	@Value("${application.payload.folder.location}")
+	@Value("${application.payload.folder.location:#{null}}")
 	private String applicationPayloadFolderLocation;
 
-	@Value("${application.schema.folder.location}")
+	@Value("${application.schema.folder.location:#{null}}")
 	private String applicationSchemaFolderLocation;
 	
 	@Value("${action:#{null}}")
@@ -48,116 +50,4 @@ public class AppConfiguration {
 	@Value("#{new Long('${events:1}')}")
 	private Long events;
 
-	public String getApplicationHeaderFolderLocation() {
-		return applicationHeaderFolderLocation;
-	}
-
-	public void setApplicationHeaderFolderLocation(String applicationHeaderFolderLocation) {
-		this.applicationHeaderFolderLocation = applicationHeaderFolderLocation;
-	}
-
-	public String getApplicationKeyFolderLocation() {
-		return applicationKeyFolderLocation;
-	}
-
-	public void setApplicationKeyFolderLocation(String applicationKeyFolderLocation) {
-		this.applicationKeyFolderLocation = applicationKeyFolderLocation;
-	}
-
-	public String getApplicationPayloadFolderLocation() {
-		return applicationPayloadFolderLocation;
-	}
-
-	public void setApplicationPayloadFolderLocation(String applicationPayloadFolderLocation) {
-		this.applicationPayloadFolderLocation = applicationPayloadFolderLocation;
-	}
-
-	public String getApplicationSchemaFolderLocation() {
-		return applicationSchemaFolderLocation;
-	}
-
-	public void setApplicationSchemaFolderLocation(String applicationSchemaFolderLocation) {
-		this.applicationSchemaFolderLocation = applicationSchemaFolderLocation;
-	}
-
-	public String getAction() {
-		return action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
-	public String[] getTopics() {
-		return topics;
-	}
-
-	public void setTopics(String[] topics) {
-		this.topics = topics;
-	}
-
-	public String getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
-	}
-
-	public Boolean getCommit() {
-		return commit;
-	}
-
-	public void setCommit(Boolean commit) {
-		this.commit = commit;
-	}
-
-	public String getTopic() {
-		return topic;
-	}
-
-	public void setTopic(String topic) {
-		this.topic = topic;
-	}
-
-	public String getSchema() {
-		return schema;
-	}
-
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
-
-	public Boolean getHeader() {
-		return header;
-	}
-
-	public void setHeader(Boolean header) {
-		this.header = header;
-	}
-
-	public Boolean getKey() {
-		return key;
-	}
-
-	public void setKey(Boolean key) {
-		this.key = key;
-	}
-
-	public Integer getBatches() {
-		return batches;
-	}
-
-	public void setBatches(Integer batches) {
-		this.batches = batches;
-	}
-
-	public Long getEvents() {
-		return events;
-	}
-
-	public void setEvents(Long events) {
-		this.events = events;
-	}
-	
 }
