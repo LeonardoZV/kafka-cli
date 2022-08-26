@@ -137,11 +137,11 @@ public class KafkaCommandLineInterfaceRunner implements CommandLineRunner {
 
     }
 
-    protected long getAmountEventsProduced(Integer batches, Long events) {
+    private long getAmountEventsProduced(Integer batches, Long events) {
         return batches * events;
     }
 
-    protected double getAmountEventsProducedPerSecond(long amountEventsProduced, double totalTimeSeconds) {
+    private double getAmountEventsProducedPerSecond(long amountEventsProduced, double totalTimeSeconds) {
         return amountEventsProduced / totalTimeSeconds;
     }
 

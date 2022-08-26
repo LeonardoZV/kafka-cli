@@ -29,7 +29,7 @@ public class KafkaConsumerService {
 		this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
-	@KafkaListener(id = "#{appConfiguration.getApplicationId()}", topics = "#{appConfiguration.getTopics()}", groupId = "#{appConfiguration.getGroupId()}", batch = "true")
+	@KafkaListener(topics = "#{appConfiguration.getTopics()}", groupId = "#{appConfiguration.getGroupId()}", batch = "true")
 	public void consume(List<Message<GenericContainerWithVersion>> listaEventos, Acknowledgment ack) throws JsonProcessingException {
 
 		for(Message<GenericContainerWithVersion> evento : listaEventos) {

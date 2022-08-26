@@ -12,7 +12,6 @@ class AppConfigurationUnitTest {
         String[] topics = new String[] { "test" };
 
         AppConfiguration appConfiguration = AppConfiguration.builder()
-                .applicationId("test")
                 .schemaFolderLocation("test")
                 .keyFolderLocation("test")
                 .headerFolderLocation("test")
@@ -29,7 +28,6 @@ class AppConfigurationUnitTest {
                 .events(1L)
                 .build();
 
-        assertEquals("test", appConfiguration.getApplicationId());
         assertEquals("test", appConfiguration.getSchemaFolderLocation());
         assertEquals("test", appConfiguration.getKeyFolderLocation());
         assertEquals("test", appConfiguration.getHeaderFolderLocation());

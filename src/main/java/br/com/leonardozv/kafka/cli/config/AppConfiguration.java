@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class AppConfiguration {
 
-	private String applicationId = "kafka-cli";
 	private String schemaFolderLocation  = null;
 	private String keyFolderLocation = null;
 	private String headerFolderLocation = null;
