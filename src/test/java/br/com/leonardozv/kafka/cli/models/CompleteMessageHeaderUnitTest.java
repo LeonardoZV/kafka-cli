@@ -12,7 +12,7 @@ class CompleteMessageHeaderUnitTest {
         CompleteMessageHeader header = CompleteMessageHeader.builder()
                 .topic("1")
                 .partition(1)
-                .offset(Long.valueOf(1))
+                .offset(1L)
                 .specversion("1")
                 .type("1")
                 .source("1")

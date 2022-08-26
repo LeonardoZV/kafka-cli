@@ -16,8 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
-import org.springframework.kafka.listener.MessageListenerContainer;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
@@ -40,9 +38,6 @@ class KafkaConsumerServiceUnitTest {
     @Mock
     private AppConfiguration appConfiguration;
 
-    @Mock
-    private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
-
     @InjectMocks
     private KafkaConsumerService kafkaConsumerService;
 
@@ -59,8 +54,6 @@ class KafkaConsumerServiceUnitTest {
 
     @Test
     void whenReceiveListOfMessages_thenLogEventsAndAcknowledge() {
-
-
 
         ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
 
@@ -97,28 +90,6 @@ class KafkaConsumerServiceUnitTest {
         verify(ack).acknowledge();
 
         log.detachAppender(listAppender);
-
-    }
-
-    @Test
-    void whenStartAndContainerIsNotNull_thenCallStartMethod() {
-
-        MessageListenerContainer msgListenerContainer = mock(MessageListenerContainer.class);
-
-        when(this.kafkaListenerEndpointRegistry.getListenerContainer(any())).thenReturn(msgListenerContainer);
-
-        this.kafkaConsumerService.start();
-
-        verify(msgListenerContainer).start();
-
-    }
-
-    @Test
-    void whenStartAndContainerIsNull_thenCallStartMethod() {
-
-        when(this.kafkaListenerEndpointRegistry.getListenerContainer(any())).thenReturn(null);
-
-        assertDoesNotThrow(() -> this.kafkaConsumerService.start());
 
     }
 
