@@ -2,7 +2,7 @@ package br.com.leonardozv.kafka.cli;
 
 import br.com.leonardozv.kafka.cli.config.AppConfiguration;
 import br.com.leonardozv.kafka.cli.services.FakeDataProducerService;
-import br.com.leonardozv.kafka.cli.services.KafkaConsumerService;
+import br.com.leonardozv.kafka.cli.services.GenericKafkaConsumerService;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -33,7 +33,7 @@ class KafkaCommandLineInterfaceRunnerUnitTest {
     private AppConfiguration appConfiguration;
 
     @Mock
-    private KafkaConsumerService kafkaConsumerService;
+    private GenericKafkaConsumerService kafkaConsumerService;
 
     @Mock
     private FakeDataProducerService fakeDataProducerService;
@@ -110,9 +110,9 @@ class KafkaCommandLineInterfaceRunnerUnitTest {
 
         this.kafkaCommandLineInterfaceRunner.run();
 
-        verify(this.appContext).registerBean(KafkaConsumerService.class);
+        verify(this.appContext).registerBean(GenericKafkaConsumerService.class);
 
-        verify(this.appContext).getBean(KafkaConsumerService.class);
+        verify(this.appContext).getBean(GenericKafkaConsumerService.class);
 
     }
 
@@ -279,7 +279,7 @@ class KafkaCommandLineInterfaceRunnerUnitTest {
 
         this.kafkaCommandLineInterfaceRunner.run();
 
-        verify(this.fakeDataProducerService).generateAndProduceEvents(any(), any(), any(), any(), any());
+        verify(this.fakeDataProducerService).generateAndProduceEvents(any(), any(), any(), any(), any(), any(), any());
 
         assertEquals(Level.INFO, listAppender.list.get(0).getLevel());
         assertTrue(listAppender.list.get(0).getFormattedMessage().contains("Foram postados 1 evento(s)"));

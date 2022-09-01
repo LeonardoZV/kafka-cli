@@ -1,11 +1,10 @@
 package br.com.leonardozv.kafka.cli.services;
 
-import br.com.leonardozv.kafka.cli.config.AppConfiguration;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,27 +14,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
-public class FakeDataProducerService extends KafkaProducerService {
+public class FakeDataProducerService {
 
-	private final AppConfiguration appConfiguration;
+	private final GenericKafkaProducerService genericKafkaProducerService;
 
-	public FakeDataProducerService(AppConfiguration appConfiguration, KafkaTemplate<String, GenericData.Record> kafkaTemplate)  {
-		super(kafkaTemplate);
-		this.appConfiguration = appConfiguration;
+	public FakeDataProducerService(GenericKafkaProducerService genericKafkaProducerService)  {
+		this.genericKafkaProducerService = genericKafkaProducerService;
 	}
 
-    public void generateAndProduceEvents(String topic, Schema schema, String tokenizedKey, String tokenizedHeader, String tokenizedValue) throws IOException, InterruptedException {
+    public void generateAndProduceEvents(String topic, Schema schema, String tokenizedKey, String tokenizedHeader, String tokenizedValue, Integer batches, Long eventsPerBatch) throws IOException {
 
     	ObjectMapper mapper = new ObjectMapper();
 
-		for (int b = 1; b <= this.appConfiguration.getBatches(); b++) {
+		for (int b = 1; b <= batches; b++) {
 
-			for (long e = 1; e <= this.appConfiguration.getEvents(); e++) {
+			for (long e = 1; e <= eventsPerBatch; e++) {
 
-				JsonNode headerJsonNode = null;
+				Headers headers = new RecordHeaders();
 
 				if (tokenizedHeader != null) {
-					headerJsonNode = mapper.readTree(replaceTokens(tokenizedHeader));
+					JsonNode headersJsonNode = mapper.readTree(replaceTokens(tokenizedHeader));
+					headersJsonNode.fields().forEachRemaining(h -> headers.add(h.getKey(), h.getValue().asText().getBytes()));
 				}
 
 				String key = null;
@@ -50,19 +49,19 @@ public class FakeDataProducerService extends KafkaProducerService {
 					value = replaceTokens(tokenizedValue);
 				}
 
-				this.produce(topic, schema, key, headerJsonNode, value);
+				this.genericKafkaProducerService.produce(topic, schema, key, headers, value);
 
 			}
 
-			this.kafkaTemplate.flush();
+			this.genericKafkaProducerService.flush();
 
 		}
 
     }
     
-    public String replaceTokens(String jsonString) {
+    private String replaceTokens(String tokenizedString) {
 
-		return jsonString
+		return tokenizedString
 				.replace("{UUID}", UUID.randomUUID().toString())
 				.replace("{DATE-FORMATO-ISO}", LocalDate.now().format(DateTimeFormatter.ISO_DATE))
 				.replace("{DATE-FORMATO-YYYYMMDD}", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")))
