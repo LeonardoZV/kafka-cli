@@ -22,7 +22,7 @@ public class FakeDataProducerService {
 		this.genericKafkaProducerService = genericKafkaProducerService;
 	}
 
-    public void generateAndProduceEvents(String topic, Schema schema, String tokenizedKey, String tokenizedHeader, String tokenizedValue, Integer batches, Long eventsPerBatch) throws IOException {
+    public void generateAndProduceEvents(String topic, String tokenizedHeaders, String tokenizedKey, Schema keySchema, String tokenizedValue, Schema valueSchema, Integer batches, Long eventsPerBatch) throws IOException {
 
     	ObjectMapper mapper = new ObjectMapper();
 
@@ -32,24 +32,28 @@ public class FakeDataProducerService {
 
 				Headers headers = new RecordHeaders();
 
-				if (tokenizedHeader != null) {
-					JsonNode headersJsonNode = mapper.readTree(replaceTokens(tokenizedHeader));
+				if (tokenizedHeaders != null) {
+					JsonNode headersJsonNode = mapper.readTree(replaceTokens(tokenizedHeaders));
 					headersJsonNode.fields().forEachRemaining(h -> headers.add(h.getKey(), h.getValue().asText().getBytes()));
 				}
 
-				String key = null;
+				String key;
 
-				if (tokenizedKey != null) {
+				if (tokenizedKey == null) {
+					key = null;
+				} else {
 					key = replaceTokens(tokenizedKey);
 				}
 
-				String value = null;
+				String value;
 
-				if (tokenizedValue != null) {
+				if (tokenizedValue == null) {
+					value = null;
+				} else {
 					value = replaceTokens(tokenizedValue);
 				}
 
-				this.genericKafkaProducerService.produce(topic, schema, key, headers, value);
+				this.genericKafkaProducerService.produce(topic, headers, key, keySchema, value, valueSchema);
 
 			}
 

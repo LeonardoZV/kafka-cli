@@ -49,46 +49,52 @@ public class ProduceCommand implements Callable<Integer> {
     @Override
     public Integer call() throws IOException {
 
-        Schema schema = new Schema.Parser().parse(Files.readString(Paths.get(this.appConfiguration.getSchemaFolderLocation() + schemaName + ".avsc")));
-
-        String key = null;
-
-        if (Boolean.TRUE.equals(withKey)) {
-
-            if (this.appConfiguration.getKeyFolderLocation() == null) {
-                log.error("Configuração 'key.folder.location' não encontrada.");
-                return 0;
-            }
-
-            key = Files.readString(Paths.get(this.appConfiguration.getKeyFolderLocation() + schemaName + ".json"));
-
-        }
-
-        String header = null;
+        String header;
 
         if (Boolean.TRUE.equals(withHeader)) {
 
-            if (this.appConfiguration.getHeaderFolderLocation() == null) {
-                log.error("Configuração 'header.folder.location' não encontrada.");
+            if (this.appConfiguration.getHeaderLocation() == null) {
+                log.error("Configuração 'header.location' não encontrada.");
                 return 0;
             }
 
-            header = Files.readString(Paths.get(this.appConfiguration.getHeaderFolderLocation() + schemaName + ".json"));
+            header = Files.readString(Paths.get(this.appConfiguration.getHeaderLocation() + schemaName + ".json"));
 
+        } else {
+            header = null;
         }
 
-        if (this.appConfiguration.getPayloadFolderLocation() == null) {
-            log.error("Configuração 'payload.folder.location' não encontrada.");
+        String key;
+        Schema keySchema;
+
+        if (Boolean.TRUE.equals(withKey)) {
+
+            if (this.appConfiguration.getKeyLocation() == null) {
+                log.error("Configuração 'key.location' não encontrada.");
+                return 0;
+            }
+
+            key = Files.readString(Paths.get(this.appConfiguration.getKeyLocation() + schemaName + ".json"));
+            keySchema = new Schema.Parser().parse(Files.readString(Paths.get(this.appConfiguration.getKeySchemaLocation() + schemaName + ".avsc")));
+
+        } else {
+            key = null;
+            keySchema = null;
+        }
+
+        if (this.appConfiguration.getValueLocation() == null) {
+            log.error("Configuração 'value.location' não encontrada.");
             return 0;
         }
 
-        String payload = Files.readString(Paths.get(this.appConfiguration.getPayloadFolderLocation() + schemaName + ".json"));
+        String value = Files.readString(Paths.get(this.appConfiguration.getValueLocation() + schemaName + ".json"));
+        Schema valueSchema = new Schema.Parser().parse(Files.readString(Paths.get(this.appConfiguration.getValueSchemaLocation() + schemaName + ".avsc")));
 
         StopWatch stopWatch = new StopWatch();
 
         stopWatch.start();
 
-        this.fakeDataProducerService.generateAndProduceEvents(topic, schema, key, header, payload, batches, eventsPerBatch);
+        this.fakeDataProducerService.generateAndProduceEvents(topic, header, key, keySchema, value, valueSchema, batches, eventsPerBatch);
 
         stopWatch.stop();
 

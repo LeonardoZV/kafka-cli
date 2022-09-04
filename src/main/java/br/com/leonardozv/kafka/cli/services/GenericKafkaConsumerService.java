@@ -1,7 +1,6 @@
 package br.com.leonardozv.kafka.cli.services;
 
 import br.com.leonardozv.kafka.cli.models.CloudEventsMessageHeader;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -49,7 +48,7 @@ public class GenericKafkaConsumerService {
 				CloudEventsMessageHeader header = this.objectMapper.convertValue(map, CloudEventsMessageHeader.class);
 
 				if (log.isInfoEnabled()) {
-					log.info("Headers: {} | Payload: {}", this.objectMapper.writeValueAsString(header), message.value().container());
+					log.info("Headers: {} | Key: {} | Value: {}", this.objectMapper.writeValueAsString(header), message.key(), message.value().container());
 				}
 
 			} catch(Exception ex) {

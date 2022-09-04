@@ -13,9 +13,10 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class AppConfiguration {
 
-	private String schemaFolderLocation  = null;
-	private String keyFolderLocation = null;
-	private String headerFolderLocation = null;
-	private String payloadFolderLocation  = null;
+	private String headerLocation = null;
+	private String keyLocation = null;
+	private String keySchemaLocation  = null;
+	private String valueLocation  = null;
+	private String valueSchemaLocation  = null;
 
 }

@@ -18,23 +18,37 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class GenericKafkaProducerService {
 
-	private final KafkaTemplate<String, Record> kafkaTemplate;
+	private final KafkaTemplate<Record, Record> kafkaTemplate;
 
 	private final DecoderFactory decoderFactory = new DecoderFactory();
 
-	public GenericKafkaProducerService(KafkaTemplate<String, Record> kafkaTemplate) {
+	public GenericKafkaProducerService(KafkaTemplate<Record, Record> kafkaTemplate) {
 		this.kafkaTemplate = kafkaTemplate;
 	}
 		
-	public CompletableFuture<SendResult<String, Record>> produce(String topic, Schema schema, String key, Headers headers, String value) throws IOException {
-				
-		Decoder decoder = decoderFactory.jsonDecoder(schema, value);
+	public CompletableFuture<SendResult<Record, Record>> produce(String topic, Headers headers, String key, Schema keySchema, String value, Schema valueSchema) throws IOException {
 
-		DatumReader<Record> reader = new GenericDatumReader<>(schema);
+		Record keyGenericRecord;
 
-		Record genericRecord = reader.read(null, decoder);
+		if (key == null) {
+			keyGenericRecord = null;
+		} else {
+			Decoder decoder = decoderFactory.jsonDecoder(keySchema, key);
+			DatumReader<Record> reader = new GenericDatumReader<>(keySchema);
+			keyGenericRecord = reader.read(null, decoder);
+		}
 
-		ProducerRecord<String, Record> producerRecord = new ProducerRecord<>(topic, null, null, key, genericRecord, headers);
+		Record valueGenericRecord;
+
+		if (value == null) {
+			valueGenericRecord = null;
+		} else {
+			Decoder decoder = decoderFactory.jsonDecoder(valueSchema, value);
+			DatumReader<Record> reader = new GenericDatumReader<>(valueSchema);
+			valueGenericRecord = reader.read(null, decoder);
+		}
+
+		ProducerRecord<Record, Record> producerRecord = new ProducerRecord<>(topic, null, null, keyGenericRecord, valueGenericRecord, headers);
 
 		return this.kafkaTemplate.send(producerRecord).completable();
 		
